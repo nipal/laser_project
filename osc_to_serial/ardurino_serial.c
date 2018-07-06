@@ -21,6 +21,7 @@ void    appel_system_debug(int fd)
     printf("fd:%d\n     errno:%d    msg:%s\n", fd, errno, strerror(errno));
 }
 
+/*
 int main()
 {
     int fd;
@@ -32,3 +33,4 @@ int main()
 
     return (0);
 }
+*/
