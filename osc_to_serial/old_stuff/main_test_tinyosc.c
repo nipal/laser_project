@@ -37,27 +37,27 @@ static void sigintHandler(int x) {
  */
 int main(int argc, char *argv[]) {
 
-    char **names;
-    int *number;
-
-    names = (char **)malloc(9 * sizeof(char *));
-    for (int i = 0; i < 9; i++)
-    {
-        names[i] = (char *)malloc(512 * sizeof(char));
-    }
-    names[0] = "/chan1/freq";
-    names[1] = "/chan1/amp";
-    names[2] = "/chan1/on";
-    names[3] = "/chan1/freq";
-    names[4] = "/chan1/amp";
-    names[5] = "/chan1/on";
-    names[6] = "/chan1/freq";
-    names[7] = "/chan1/amp";
-    names[8] = "/chan1/on";
-    number = (int)malloc(9*sizeof(int));
-    for (int i = 0; i < 9; i++)
-        number[i] = 0;
-  char buffer[2048]; // declare a 2Kb buffer to read packet data into
+//    char **names;
+//    int *number;
+//
+//    names = (char **)malloc(9 * sizeof(char *));
+//    for (int i = 0; i < 9; i++)
+//    {
+//        names[i] = (char *)malloc(512 * sizeof(char));
+//    }
+//    names[0] = "/chan1/freq";
+//    names[1] = "/chan1/amp";
+//    names[2] = "/chan1/on";
+//    names[3] = "/chan1/freq";
+//    names[4] = "/chan1/amp";
+//    names[5] = "/chan1/on";
+//    names[6] = "/chan1/freq";
+//    names[7] = "/chan1/amp";
+//    names[8] = "/chan1/on";
+//    number = (int)malloc(9*sizeof(int));
+//    for (int i = 0; i < 9; i++)
+//        number[i] = 0;
+//  char buffer[2048]; // declare a 2Kb buffer to read packet data into
 
   printf("Starting write tests:\n");
   int len = 0;

@@ -35,7 +35,6 @@ static void sigintHandler(int x) {
  * A basic program to listen to port 9000 and print received OSC packets.
  */
 
-#define NBR_SEG 16
 void    osc_wraper(tosc_message *osc)
 {
     // on recupere chaque partie des truc "slash"
