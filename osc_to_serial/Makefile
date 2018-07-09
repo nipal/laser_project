@@ -28,6 +28,7 @@ SRC		= 						\
 		main.c					\
 		tinyosc.c				\
 		ardurino_serial.c		\
+		ft_strsplit.c			\
 		osc_wrapeur.c			\
 
 

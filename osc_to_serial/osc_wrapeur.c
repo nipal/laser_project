@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include "tinyosc.h"
+#include "laser_project.h"
 
 static volatile bool keepRunning = true;
 
@@ -35,55 +36,80 @@ static void sigintHandler(int x) {
  * A basic program to listen to port 9000 and print received OSC packets.
  */
 
+//  pour le peremier mot... peu etre aussi pour les autre
+//  mais on va peutre faire autrement au debut pour tester
+int get_key_id(int lvl, char *word)
+{
+}
+
+double  tosc_get_value(tosc *osc, int arg_pos)
+{
+    double  value;
+    char    type;
+
+    // on chope le type
+
+    type = '\0';
+    value = 0.0;
+    switch ()
+    {
+        case 'i':
+            //  on converti
+            //  on envoie
+            break ;
+        case 'f':
+            // on envoie tel quel
+            break ;
+        case 's':
+            // on filtre les merdre de ','
+            // on convertie
+            // on envoie
+            break ;
+    }
+    return (value);
+}
+
 #define NBR_SEG 16
 void    osc_wraper(tosc_message *osc)
 {
     // on recupere chaque partie des truc "slash"
     // on fait les switch case qu'il faut
   
-    int period, nbr_seg, list_pt[NBR_SEG];
+    char    key_word[][32] = {"period", "nbr_seg", "list_pt"};
+    int     period, nbr_seg, list_pt[NBR_SEG];
+    float   value;
 
     char    *addr, *format, **parts;
-    int     nb_parts;
+    int     nb_parts, pt_id, i;
+
 
     addr = tosc_getAddress(osc); 
     format = tosc_getFormat(osc);
     if (!(parts = ft_strsplit(addr, '/')))
-        return ((void)printf("aie aie aie, une erreur est survenue... ... ... mais que va t'il se passer\n"));
+        return ((void)printf("aie aie aie, une erreur est survenue... ... ... mais que va t'il se passer?!?\n"));
 
-    switch (parts[0])
+    printf("=============\naddr:%s\n", addr);
+    for (i = 0; parts[i]; i++)
     {
-        case "period":
-            break ;
-        case "nbr_seg":
-            break ;
-        case "list_pt":
-            switch (parts[0])
-            {
-                case "pt0":
-                    break ;
-                case "pt1":
-                    break ;
-                case "pt2":
-                    break ;
-                case "pt3":
-                    break ;
-                case "pt4":
-                    break ;
-                case "pt5":
-                    break ;
-                case "pt6":
-                    break ;
-                case "pt7":
-                    break ;
-                case "pt8":
-                    break ;
-                case "pt9":
-                    break ;
-            }
-            break ;
+        printf("parts[%d]:%s\n", i, parts[i]);
     }
 
+    if (strcmp(parts[0], "period") == 0)
+    {
+        // TODO: recupere la valeur de la periode
+       printf("periode actualisation:  >> %5d <<\n", value); 
+    }
+    else if (strcmp(parts[0], "nbr_seg") == 0)
+    {
+        // TODO: recuperer la valeur du nombre de segment
+      printf("nbr_seg actualisation:  >> %5d <<\n", value); 
+    }
+    else if (strcmp(parts[0], "list_pt") == 0)
+    {
+        // TODO: recuperer l'indice du point.
+        // TODO: recuperer la posotion du point.
+       printf("list_pt actualisation: PT[%d]    >> %5d <<\n", value); 
+    }
     ft_free_tab(parts);
 }
 
@@ -135,6 +161,7 @@ int main_old(int argc, char *argv[]) {
           tosc_message osc;
           tosc_parseMessage(&osc, buffer, len);
           tosc_printMessage(&osc);
+          osc_wraper(&osc);
         }
       }
     }
