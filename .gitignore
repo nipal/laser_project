@@ -1,4 +1,6 @@
 osc_to_serial
+osc_to_serial_savePRG
 .*.o
+*.o
 .*.swo
 .*.swp

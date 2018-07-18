@@ -42,35 +42,49 @@ int get_key_id(int lvl, char *word)
 {
 }
 
-double  tosc_get_value(tosc *osc, int arg_pos)
+//  TODO: il faudra faire un truc avec des pointeur sur fonction, une archie super generique
+//  pour faire une genre de surcouche a tiny osc avec des outil d'integration et de managment efficace
+//  de tout les comportement, et surtout adpter aux differente application ou programme qui emete
+//  de l'OSC sans forcement respoecter toute les specification.
+//  TODO: et dans tout les cas il faudra faire un  ajout/update de toute les fonction qu'on recode
+//  regulierement pour l'utilisation de l'osc en prod ou en debug.
+double  tosc_get_value(tosc_message *osc, int arg_pos)
 {
-    double  value;
-    char    type;
+    double          value;
+    char            type;
+    char            *tmp;
+    const   char    *tmp2;
+    int             i;
 
-    // on chope le type
-
-    type = '\0';
+    type = osc->format[arg_pos];
     value = 0.0;
-    switch ()
+    switch (type)
     {
         case 'i':
-            //  on converti
-            //  on envoie
+            value = (double)(tosc_getNextInt32(osc));
             break ;
         case 'f':
-            // on envoie tel quel
+            value = tosc_getNextFloat(osc);
             break ;
         case 's':
-            // on filtre les merdre de ','
-            // on convertie
-            // on envoie
+    value = 0.0;
+            tmp = strdup((tmp2 = tosc_getNextString(osc)));
+            for (i = 0; tmp && tmp[i]; i++)
+                tmp[i] = (tmp[i] == ',') ? '.' : tmp[i];
+printf("string[%p] value =>> {%s}\n", tmp, tmp);
+            value = atof(tmp);
+            free(tmp);
+            break ;
+        default :
+            dprintf(2, "hum i dont find any type conpatible, i put ((1337 + 42) x 0) value\n");
+            value = ((1337 + 42) * 0);
             break ;
     }
     return (value);
 }
 
 #define NBR_SEG 16
-void    osc_wraper(tosc_message *osc)
+void    osc_wraper(tosc_message *osc, int fd_ardu)
 {
     // on recupere chaque partie des truc "slash"
     // on fait les switch case qu'il faut
@@ -80,7 +94,14 @@ void    osc_wraper(tosc_message *osc)
     float   value;
 
     char    *addr, *format, **parts;
-    int     nb_parts, pt_id, i;
+    int     nb_parts, pt_id, i; 
+
+    int     status = 0; // stateof program
+    int     ret[3];
+    char    tmpBuff[2048];
+    int     tmpSize = 0;
+
+    memset(tmpBuff, 0, 2048);
 
 
     addr = tosc_getAddress(osc); 
@@ -88,28 +109,58 @@ void    osc_wraper(tosc_message *osc)
     if (!(parts = ft_strsplit(addr, '/')))
         return ((void)printf("aie aie aie, une erreur est survenue... ... ... mais que va t'il se passer?!?\n"));
 
+    printf("\n\n===================\n");
+    tmpSize = osc->len;
+    memmove(tmpBuff, osc->buffer, tmpSize);
+    tmpBuff[tmpSize] = '\0';
+    printf("buffer[%d]:{%s}\n", tmpSize, tmpBuff);
     printf("=============\naddr:%s\n", addr);
     for (i = 0; parts[i]; i++)
     {
         printf("parts[%d]:%s\n", i, parts[i]);
     }
 
+    //  TODO: refaire le meme principe avec des pointeur sur fonction :)
+    printf("\n~~ osc message selector translission ~~\n");
+
+
+    // before todo
+    /*    status = 0;
+    status |= ((ret[0] = strcmp(parts[0], "period") ) == 0) << 0;
+    status |= ((ret[1] = strcmp(parts[0], "nbr_seg")) == 0) << 1;
+    status |= ((ret[2] = strcmp(parts[0], "list_pt")) == 0) << 2;
+  */
+    
+    // TODO: automatiser avec tableau + boucle
+// done
+    status = 0;
+    for (int i;i<3;i++)
+        status |= ((ret[i] = strcmp(parts[0], key_word[i])) == 0) << i;
+
+    printf("status: |%x|      ret[0]:%d   ret[1]:%d   ret[2]:%d\n", status, ret[0], ret[1], ret[2]);
+
+
     if (strcmp(parts[0], "period") == 0)
     {
         // TODO: recupere la valeur de la periode
-       printf("periode actualisation:  >> %5d <<\n", value); 
+        value = tosc_get_value(osc, 0);
+       printf("periode actualisation:  >> %5f <<\n", value); 
     }
     else if (strcmp(parts[0], "nbr_seg") == 0)
     {
         // TODO: recuperer la valeur du nombre de segment
-      printf("nbr_seg actualisation:  >> %5d <<\n", value); 
+        value = tosc_get_value(osc, 0);
+      printf("nbr_seg actualisation:  >> %5d <<\n", (int)value); 
     }
     else if (strcmp(parts[0], "list_pt") == 0)
     {
         // TODO: recuperer l'indice du point.
         // TODO: recuperer la posotion du point.
-       printf("list_pt actualisation: PT[%d]    >> %5d <<\n", value); 
+        pt_id = atoi(parts[1] + 3); // pour enlever le "pt_"
+        value = tosc_get_value(osc, 0);
+        printf("list_pt actualisation: PT[%d]    >> %5f <<\n", pt_id, value); 
     }
+    printf("~~ endof transmission ~~\n");
     ft_free_tab(parts);
 }
 
@@ -160,7 +211,7 @@ int main_old(int argc, char *argv[]) {
         } else {
           tosc_message osc;
           tosc_parseMessage(&osc, buffer, len);
-          tosc_printMessage(&osc);
+      //    tosc_printMessage(&osc);
           osc_wraper(&osc);
         }
       }

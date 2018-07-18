@@ -18,6 +18,7 @@ OS	:=	$(shell uname -s)
 PROC	:= $(shell uname -p)
 # ////////////////
 
+CFLAGS	= -fsanitize=address -g
 
 #-fsanitize=address -g3
 NAME	=	osc_to_serial
