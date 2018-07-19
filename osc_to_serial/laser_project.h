@@ -5,16 +5,16 @@
 # include <string.h>
 # include <stdio.h>
 
-# define NBR_SEG 10
+# define NBR_SEG 6
 # define DELAY_RESOLUTION 1000000
 
 typedef struct  s_light_pack
 {
-    int         beg;                // 32  bit
-    int         period;             // 32  bit
-    int         nbr_seg;            // 32  bit
-    int         lst_pt[NBR_SEG];    // 320 bit
-    int         end;                // 32  bit
+    int         beg;                    // 32  bit
+    int         period;                 // 32  bit
+    int         nbr_seg;                // 32  bit
+    int         lst_pt[NBR_SEG * 2];    // 384 bit
+    int         end;                    // 32  bit
 }               t_light_pack;
 
 char		**ft_strsplit(const char *str, char c);
