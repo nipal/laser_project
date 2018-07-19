@@ -10,11 +10,11 @@
 
 typedef struct  s_light_pack
 {
-    int         beg;                // 32 bit
-    int         period;             // 32bit
-    short       nbr_seg;            // 16bit
-    int         lst_pt[NBR_SEG];    // 320bit
-    int         end;                // 32 bit
+    int         beg;                // 32  bit
+    int         period;             // 32  bit
+    int         nbr_seg;            // 32  bit
+    int         lst_pt[NBR_SEG];    // 320 bit
+    int         end;                // 32  bit
 }               t_light_pack;
 
 char		**ft_strsplit(const char *str, char c);
