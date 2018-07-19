@@ -24,5 +24,6 @@ void        ft_free_tab(char **tab);
 void        appel_system_debug(int fd);
 int         open_ardu_standar();
 void        light_pack_init(t_light_pack *lp);
+void        ardu_print_return(int fd_ardu);
 
 #endif

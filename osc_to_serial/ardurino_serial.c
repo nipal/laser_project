@@ -27,7 +27,7 @@ int open_ardu_standar()
 {
     int fd;
 
-    fd = open("/dev/ttyACM0",O_WRONLY);
+    fd = open("/dev/ttyACM0",O_RDWR);
     appel_system_debug(fd);
 //    fd = 2;     // to debug with error output
     return (fd);
@@ -41,6 +41,28 @@ void    light_pack_init(t_light_pack *lp)
     
     lp->period = DELAY_RESOLUTION;  // 1000000 one million by etienne klein
     
+}
+
+void    ardu_print_return(int fd_ardu)
+{
+    char    buff[4096];
+    int     ret;
+    int     has_read;
+
+    has_read = 0;
+    while ((ret = read(fd_ardu, buff, sizeof(buff))) > 0)
+    {
+        has_read = 1;
+        write(1, buff, ret);
+    }
+    if (has_read)
+    {
+        write(1, "===============\n", 16);
+    }
+    if (ret < 0)
+    {
+        appel_system_debug(fd_ardu);
+    }
 }
 
 

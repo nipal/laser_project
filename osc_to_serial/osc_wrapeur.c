@@ -161,7 +161,7 @@ void    osc_wraper(tosc_message *osc, t_light_pack *lp)
         pt_id = atoi(parts[1] + 3); // pour enlever le "pt_"
         value = tosc_get_value(osc, 0);
         printf("list_pt actualisation: PT[%d]    >> %5f <<\n", pt_id, value); 
-        lp->lst_pt[pt_id] = (int)(value * DELAY_RESOLUTION);
+        lp->lst_pt[pt_id] = (int)(value * lp->period);
     }
     printf("~~ endof transmission ~~\n");
     ft_free_tab(parts);
@@ -233,6 +233,7 @@ int main_old(int argc, char *argv[]) {
 
   // close the UDP socket
   close(fd);
+  close(fd_ardu);
 
   return 0;
 }
