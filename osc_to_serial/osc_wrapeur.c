@@ -83,8 +83,8 @@ printf("string[%p] value =>> {%s}\n", tmp, tmp);
     return (value);
 }
 
-#define NBR_SEG 16
-void    osc_wraper(tosc_message *osc, int fd_ardu)
+//  la fonction recupere les entrer osc et les charge dans une structure
+void    osc_wraper(tosc_message *osc, t_light_pack *lp)
 {
     // on recupere chaque partie des truc "slash"
     // on fait les switch case qu'il faut
@@ -145,12 +145,14 @@ void    osc_wraper(tosc_message *osc, int fd_ardu)
         // TODO: recupere la valeur de la periode
         value = tosc_get_value(osc, 0);
        printf("periode actualisation:  >> %5f <<\n", value); 
+       lp->period = (int)(value * DELAY_RESOLUTION);
     }
     else if (strcmp(parts[0], "nbr_seg") == 0)
     {
         // TODO: recuperer la valeur du nombre de segment
         value = tosc_get_value(osc, 0);
       printf("nbr_seg actualisation:  >> %5d <<\n", (int)value); 
+       lp->nbr_seg = (int)(value);
     }
     else if (strcmp(parts[0], "list_pt") == 0)
     {
@@ -159,6 +161,7 @@ void    osc_wraper(tosc_message *osc, int fd_ardu)
         pt_id = atoi(parts[1] + 3); // pour enlever le "pt_"
         value = tosc_get_value(osc, 0);
         printf("list_pt actualisation: PT[%d]    >> %5f <<\n", pt_id, value); 
+        lp->lst_pt[pt_id] = (int)(value * DELAY_RESOLUTION);
     }
     printf("~~ endof transmission ~~\n");
     ft_free_tab(parts);
@@ -168,7 +171,15 @@ int main_old(int argc, char *argv[]) {
 
   char buffer[2048]; // declare a 2Kb buffer to read packet data into
 
-  printf("Starting write tests:\n");
+  t_light_pack  lp;     // lp ==> light_pack
+  int           fd_ardu;
+
+  light_pack_init(&lp);  
+
+  if ((fd_ardu = open_ardu_standar()) < 0)
+    return (1); // il faura voir ou est-ce qu'on lache un message d'erreur claire
+
+  printf("Starting OSC write tests:\n");
   int len = 0;
   char blob[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
   len = tosc_writeMessage(buffer, sizeof(buffer), "/address", "fsibTFNI",
@@ -211,8 +222,10 @@ int main_old(int argc, char *argv[]) {
         } else {
           tosc_message osc;
           tosc_parseMessage(&osc, buffer, len);
-      //    tosc_printMessage(&osc);
-          osc_wraper(&osc);
+      //    tosc_printMessage(&osc); // si on lis les valeur avant, le buffer se met a la fin 
+          osc_wraper(&osc, &lp);     // on recupere les message osc et on met a jour la structure t_light_pack
+          write(fd_ardu, &lp, sizeof(t_light_pack));    // on envoie la structure t_light_pack a l'ardurino
+          
         }
       }
     }

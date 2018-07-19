@@ -9,6 +9,8 @@
 #include <errno.h> 
 #include <string.h>       
 
+#include <laser_project.h>
+
 void    appel_system_debug(int fd)
 {
     char    *tmp;
@@ -20,6 +22,27 @@ void    appel_system_debug(int fd)
     printf("msg:%s\n", tmp);
     printf("fd:%d\n     errno:%d    msg:%s\n", fd, errno, strerror(errno));
 }
+
+int open_ardu_standar()
+{
+    int fd;
+
+    fd = open("/dev/ttyACM0",O_WRONLY);
+    appel_system_debug(fd);
+//    fd = 2;     // to debug with error output
+    return (fd);
+}
+
+void    light_pack_init(t_light_pack *lp)
+{
+    memset(lp, 0, sizeof(t_light_pack));
+    memset(&lp->beg, '#', 4);
+    memset(&lp->end, '@', 4);
+    
+    lp->period = DELAY_RESOLUTION;  // 1000000 one million by etienne klein
+    
+}
+
 
 /*
 int main()
