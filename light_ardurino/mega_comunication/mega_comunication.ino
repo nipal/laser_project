@@ -31,17 +31,34 @@ typedef	struct	s_light_pack
 	long	offset;
 	long	nbr_seg;
 	long	lst_pt[NBR_SEG * 2];
-	long	none;
-	long	fin;
+//	long	none;
+	long	end;
 }		t_segments;
+
+extern	byte	buffer_receive[512];
+extern	byte	buffer_transmit[512];
+
+//	ce seront des fonction destiner a manipuler des variable globale
+
+void	buff_transmit_push(byte *to_push, int len);
+void	buff_transmit_push_str(const char *to_push);
+void	buff_transmit_push_int(const char *name_var, int to_push);
+void	buff_transmit_push_int_array(const char *name_array, const char *name_elem, long int *to_push, int len);
+void	buff_transmit_push_float(char *name_var, int to_push);
+void	buff_transmit_push_float_array(char *name_array, char *name_elem, float *to_push, int len);
+void	buff_transmit_clear();
+void	buff_transmit_send();
+void	buff_init();
 
 //	normalized baudrate: 110, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
 void setup()
 {
+	buff_init();
 	Serial.begin(115200);					pinMode(13, OUTPUT);
 	digitalWrite(13, LOW);			 	// sets the digital pin 13 off
 }
 
 void loop()
 {
+//	serial_print_pack(buffer_receive, 0);
 }
