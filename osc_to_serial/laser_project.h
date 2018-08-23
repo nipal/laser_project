@@ -5,16 +5,29 @@
 # include <string.h>
 # include <stdio.h>
 
-# define NBR_SEG 6
-# define DELAY_RESOLUTION 1000000
+// read with timeout
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/select.h>
+
+int ardu_print_return2(int fd_ardu);
+
+
+
+# define NBR_SEG 5
+# define DELAY_RESOLUTION 50000 // 20 hz au minimum: 0.05 s
 
 typedef struct  s_light_pack
 {
-    int         beg;                    // 32  bit
-    int         period;                 // 32  bit
-    int         nbr_seg;                // 32  bit
-    int         lst_pt[NBR_SEG * 2];    // 384 bit
-    int         end;                    // 32  bit
+  	int	beg;
+	int	period;
+	int	offset;
+	int	nbr_seg;
+	int	lst_pt[NBR_SEG * 2];
+//	int	none;
+	int	end;
 }               t_light_pack;
 
 char		**ft_strsplit(const char *str, char c);

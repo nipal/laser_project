@@ -134,8 +134,14 @@ void    osc_wraper(tosc_message *osc, t_light_pack *lp)
     // TODO: automatiser avec tableau + boucle
 // done
     status = 0;
-    for (int i;i<3;i++)
+    for (int i = 0;i<3;i++)
+    {
+	char a;
+	a = ret[i];
+	a = parts[0];
+	a = key_word[i];
         status |= ((ret[i] = strcmp(parts[0], key_word[i])) == 0) << i;
+    }
 
     printf("status: |%x|      ret[0]:%d   ret[1]:%d   ret[2]:%d\n", status, ret[0], ret[1], ret[2]);
 
@@ -224,8 +230,8 @@ int main_old(int argc, char *argv[]) {
           tosc_parseMessage(&osc, buffer, len);
       //    tosc_printMessage(&osc); // si on lis les valeur avant, le buffer se met a la fin 
           osc_wraper(&osc, &lp);     // on recupere les message osc et on met a jour la structure t_light_pack
-          write(fd_ardu, &lp, sizeof(t_light_pack));    // on envoie la structure t_light_pack a l'ardurino
-          
+          write(fd_ardu, &lp, sizeof(t_light_pack));    // on envoie la structure t_light_pack a l'ardurino 
+         ardu_print_return2(fd_ardu);
         }
       }
     }
